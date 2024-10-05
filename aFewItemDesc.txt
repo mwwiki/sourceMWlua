@@ -1,3 +1,15 @@
+function toTab(str)
+    local tab = {}
+    for line in str:gmatch("[^\n]+") do
+        local index, description = line:match("^(%d+):%s*(.+)$")
+        if index and description then
+            tab[tonumber(index)] = description
+        end
+    end
+    return tab
+end
+
+itemDescList = [=[
 1: Nằm ở sâu trong Lòng Đất. Rất cứng, không thể lay chuyển
 2: Khối chức năng
 3: Khối nước bất động
@@ -2963,4 +2975,6 @@
 13196: Nhấp vào mặt đất để tạo sinh vật
 13197: Nhấp vào mặt đất để tạo sinh vật
 13198: Nhấp vào mặt đất để tạo sinh vật
-13199: Nhấp vào mặt đất để tạo sinh vật
+13199: Nhấp vào mặt đất để tạo sinh vật]=]
+
+itemDescList = toTab(itemDescList)
