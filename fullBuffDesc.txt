@@ -1,0 +1,409 @@
+function toTab(str)
+    local tab = {}
+    for line in str:gmatch("[^\n]+") do
+        local index, description = line:match("^(%d+):%s*(.+)$")
+        if index and description then
+            tab[tonumber(index)] = description
+        end
+    end
+    return tab
+end
+
+buffDescList = [=[
+1001:
+1002:
+1003:
+2001:
+3001:Mỗi 4s hồi 5đ HP.
+3002:Mỗi 2s hồi 5đ HP.
+3003:Mỗi 1s hồi 5đ HP.
+4001:Tốc độ chạy tăng 25%.
+4002:Tốc độ chạy tăng 50%.
+4003:Tốc độ chạy tăng 75%.
+4004:Tốc độ chạy tăng 75%.
+5001:Tăng 25% tốc độ bơi.
+5002:Tăng 50% tốc độ bơi.
+5003:Tăng 75% tốc độ bơi.
+6001:Tăng độ cao khi nhảy
+6002:Tăng độ cao khi nhảy
+6003:Tăng độ cao khi nhảy, coi chừng té gãy chân!
+6004:Tăng độ cao khi nhảy, coi chừng té gãy chân!
+6005:Tốc độ chạy tăng 90%, nhảy tăng 25.
+7001:Tăng 25% tộc độ đào.
+7002:Tăng 50% tốc độ đào.
+7003:Tăng 75% tốc độ đào.
+8001:Tốc độ chạy giảm 25%.
+8002:Tốc độ chạy giảm 50%.
+8003:Tốc độ chạy giảm 75%.
+9001:Giảm 25% tốc độ đào.
+9002:Giảm 50% tốc độ đào.
+9003:Giảm 75% tốc độ đào.
+10001:Nhận 2 điểm HP Hấp Thu ST.
+10002:Nhận 4 điểm HP Hấp Thu ST.
+10003:Nhận 6 điểm HP Hấp Thu ST.
+11001:Tăng 25% sát thương bạo kích.
+11002:Tăng 50% sát thương bạo kích.
+11003:Tăng 75% sát thương bạo kích.
+12001:Tăng 2m cự ly đánh lui.
+12002:Tăng 4m cự ly đánh lui.
+12003:Tăng 6m cự ly đánh lui.
+13001:Giảm 1m cự ly bị đánh lui.
+13002:Giảm 2m cự ly bị đánh lui.
+13003:Giảm 3m cự ly bị đánh lui.
+14001:Nhận tỉ lệ rơi đặc biệt tăng 1%.
+14002:Nhận tỉ lệ rơi đặc biệt tăng 2%
+14003:Nhận tỉ lệ rơi đặc biệt tăng 3%.
+15001:Nhận tỉ lệ rơi đặc biệt tăng 1%.
+15002:Nhận tỉ lệ rơi đặc biệt tăng 2%
+15003:Nhận tỉ lệ rơi đặc biệt tăng 3%.
+16001:Khả năng nhìn ban đêm tăng 20
+16002:Khả năng nhìn ban đêm tăng 40
+16003:Khả năng nhìn ban đêm tăng 50
+16004:Khả năng nhìn ban đêm tăng 60
+16005:Khả năng nhìn ban đêm tăng 50
+17001:Tăng 25% sát thương cận chiến.
+17002:Tăng 50% sát thương cận chiến..
+17003:Tăng 75% sát thương cận chiến.
+18001:Tăng 25% sát thương tầm xa.
+18002:Tăng 50% sát thương tầm xa.
+18003:Tăng 75% sát thương tầm xa.
+19001:Tăng 25% sát thương nổ.
+19002:Tăng 50% sát thương nổ.
+19003:Tăng 75% sát thương nổ.
+20001:Tăng 100% sát thương lửa.
+21001:Tăng 100% sát thương độc tố.
+22001:Tăng 100% sát thương hỗn loạn.
+23001:Sát thương với Thợ Săn Tinh Anh tăng 25%.
+23002:Sát thương với Thợ Săn Tinh Anh tăng 50%.
+23003:Sát thương với Thợ Săn Tinh Anh tăng 75%.
+24001:Sát thương với Thợ Săn Dã Thú tăng 25%.
+24002:Sát thương với Thợ Săn Dã Thú tăng 50%.
+24003:Sát thương với Thợ Săn Dã Thú tăng 75%.
+25001:Tăng 25% sát thương lên nhân loại.
+25002:Tăng 50% sát thương lên nhân loại.
+25003:Tăng 75% sát thương lên nhân loại.
+26001:Giảm 25% sát thương cận chiến phải chịu.
+26002:Giảm 50% sát thương cận chiến phải chịu.
+26003:Giảm 75% sát thương cận chiến phải chịu.
+27001:Giảm 25% sát thương tầm xa phải chịu.
+27002:Giảm 50% sát thương tầm xa phải chịu.
+27003:Giảm 75% sát thương tầm xa phải chịu.
+28001:Giảm 25% sát thương nổ phải chịu. 
+28002:Giảm 50% sát thương nổ phải chịu.
+28003:Giảm 75% sát thương nổ phải chịu.
+29001:Giảm 25% sát thương lửa phải chịu.
+29002:Giảm 50% sát thương lửa phải chịu.
+29003:Giảm 75% sát thương lửa phải chịu. lửa phải chịu.
+30001:Giảm 25% sát thương độc phải chịu.
+30002:Giảm 50% sát thương độc phải chịu.
+30003:Giảm 75% sát thương độc phải chịu.
+31001:Giảm 25% sát thương bóng tối
+31002:Giảm 50% sát thương bóng tối
+31003:Giảm 75% sát thương bóng tối
+32001:Giảm 25% sát thương ngã phải chịu.
+32002:Giảm 50% sát thương ngã phải chịu.
+32003:Giảm 75% sát thương ngã phải chịu.
+33000:Gây 3 điểm sát thương mỗi giây.
+33001:Mỗi 1s gây ra 5 điểm sát thương.
+33002:Mỗi 1s gây ra 10 điểm sát thương.
+33003:Mỗi 1s gây ra 15 điểm sát thương.
+33004:Mỗi 1s gây ra 20 điểm sát thương.
+33005:Mỗi 1s gây ra 25 điểm sát thương.
+34001:Mỗi 1s gây ra 5 điểm sát thương.
+34002:Gây 10 sát thương mỗi giây.
+34003:Gây 15 sát thương mỗi giây.
+35001:Mỗi 2s gây ra 10 điểm sát thương.
+35002:Mỗi 2s gây ra 10 điểm sát thương.
+35003:Mỗi 2s gây ra 10 điểm sát thương.
+36001:Bạn cảm thấy đói hơn, và tốc độ đói của bạn tăng 25%
+36002:Bạn cảm thấy đói hơn, và tốc độ đói của bạn tăng 50%
+36003:Bạn cảm thấy đói hơn, và tốc độ đói của bạn tăng 75%
+37001:Có khả năng thở dưới nước!
+37002:Có khả năng thở dưới nước!
+37003:Có khả năng thở dưới nước!
+38001:Ồ, tôi cảm thấy như mình đang bay
+38002:Ồ, tôi cảm thấy như mình đang bay
+38003:Ồ, tôi cảm thấy như mình đang bay
+39001:Quà của ông già Năm Mới!
+40001:Thế giới đang thu nhỏ!
+41001:Thế giới đang phóng to!
+42001:Nằm trong bong bóng, cảm thấy nhẹ lang lâng.
+42002:Nằm trong bong bóng, cảm thấy nhẹ lang lâng.
+42003:Nằm trong bong bóng, cảm thấy nhẹ lang lâng.
+43001:Nảy lên!
+44001:Trúng độc kéo dài, đầu sưng to rồi
+45001:Bão tuyết làm chậm bạn.
+45002:Bão tuyết làm chậm bạn.
+45003:Bão tuyết làm chậm bạn.
+46001:Bạn cảm thấy như bàn chân của bạn là bắt nguồn từ, và bạn đang nhận thiệt hại từ nó.
+47001:Hmmm, mùi như thịt nướng, Ouch đau quá!
+47002:Hmmm, mùi như thịt nướng, Ouch đau quá!
+50001:Trong 5s hồi 15 điểm HP.
+50002:Trong 5s hồi 30 điểm HP.
+50003:Trong 5s hồi 40 điểm HP.
+50004:Trong 5s hồi 50 điểm HP.
+51001:Trong 30s hồi 75 điểm HP.
+51002:Trong 12s hồi 60 điểm HP.
+52001:Hồi 5 điểm HP mỗi giây
+52002:Mất 5 điểm HP mỗi giây
+53001:Tốc độ đào tăng 25%
+53002:Tốc độ đào giảm 25%
+54001:Miễn Nhiễm Trăm Độc
+55001:Chẳng lẽ đây là ... thuốc diệt trùng!
+60001:Gây 5 sát thương sau mỗi 1,25 giây
+60002:Mỗi 1s gây ra 5 điểm sát thương.
+61001:Tăng nhiều sát thương cận chiến.
+62001:Giảm 100% sát thương cận chiến phải chịu.
+63001:Khí ga độc khó chịu
+64001:Phổi liên tục bị tấn công bởi khí ga độc, bị sát thương liên tục
+65001:Khu vực dễ chịu
+65002:Ahhh, khu vực dễ chịu nơi không có ai hút thuốc
+65003:Ahhh, khu vực dễ chịu nơi không có ai hút thuốc
+66001:Bạn có thể thở, nhưng mùi này không tốt
+67001:Đá Rune đang bảo vệ bạn một lúc.
+67002:Ahhh, khu vực dễ chịu nơi không có ai hút thuốc
+68001:Bạn đang đói.
+70001:Có khả năng giải quyết và ăn cắp
+70002:Có khả năng bắn và đạp xe đạp
+71001:Gà bị nhiễm độc vì thức ăn đột biến.
+72001:Mất bóng: Bạn có thể cướp bóng, cản bóng, chặn khi không có bóng trong tay.Cướp bóng (Nhấp chuột trái): Cướp bóng từ đối thủ.Cản bóng (Nhấp chuột phải): Cản bước tiến của đối thủ Block (Nút Space): Nhảy lên và đập bóng khỏi không trung
+72002:Khi đang rê bóng: Có thể chuyền, ném vào rổ và chạy nước rút Chuyền (Chuột trái): Chuyền cho đồng đội của mình Ném bóng (Chuột phải): Ngắm theo hướng trung tâm. Khi căn chỉnh rổ, hãy vận sức ở trong khu vực đánh #cfa7a0f màu vàng #n, sẽ có nhiều cơ hội trúng hơn Nước rút (Nút space): Chạy nước rút 
+72003:Thay đổi @1 động tác của người chơi
+73001:Rất khó chịu trong môi trường nóng bức
+73002:Bởi vì bạn đang đeo thiết bị chống nóng, bạn có thể không bị ảnh hưởng trong môi trường nóng
+74001:
+75001:Rất khó chịu trong môi trường tuyết
+76001:
+77001:Trời ơi, máu chảy không ngừng! bác sĩ ở đâu ?!
+77002:Dừng lại ngay! Đá này không tốt lắm.
+78001:
+79001:
+80001:
+81001:Thức dậy thấy đôi chân rất khỏe mạnh
+82001:
+82002:
+82003:
+83001:
+83002:
+83003:
+84001:
+84002:
+84003:
+85001:
+85002:
+85003:
+86001:
+86002:
+86003:
+87001:
+87002:
+87003:
+88001:
+88002:
+88003:
+89001:
+89002:
+89003:
+90001:
+90002:
+90003:
+91001:Ăn trái cây thiêng, bạn cảm nhận được sức mạnh vô hạn đang trào dâng trong cơ thể
+92001:Nhận phước lành từ Mây cầu vồng, tăng độ cao khi nhảy, giảm sát thương rơi xuống
+93001:Bạn cần ăn thức ăn phục hồi sức khỏe hoặc nằm yên một chỗ để phục hồi thể lực đỡ mệt mỏi.
+93002:Cơ thể đang trên bờ vực của sự suy sụp. Mau ăn một chút đồ ăn để phục hồi thể lực!
+94001:
+95001:Thể lực của bạn đang bị Fantom đánh cắp, hãy cẩn thận!
+96001:
+97001:Sức mạng năng lượng của ngôi sao quá mạnh, và cơ thể con người không thể chịu được quá nhiều năng lượng từ ngôi sao trong khoảng thời gian ngắn.
+98001:Sức mạnh Balala- Phép thuật chuyển đổi
+98002:Sức mạnh Balala- Phép thuật chuyển đổi
+98003:Sức mạnh Balala- Phép thuật chuyển đổi
+98004:Sức mạnh Balala- Phép thuật chuyển đổi
+98005:Sức mạnh Balala- Phép thuật chuyển đổi
+98006:Sức mạnh Balala- Phép thuật chuyển đổi
+98007:Sức mạnh Balala- Phép thuật chuyển đổi
+98008:Sức mạnh Balala- Phép thuật chuyển đổi
+99001:
+100001:Mỗi giây mất 3 điểm HP
+101001:Mỗi giây mất 2 điểm HP.
+101002:Mỗi giây mất 5 điểm HP.
+101003:Mỗi giây mất 10 điểm HP.
+101004:Mỗi giây mất 15 điểm HP.
+101005:Mỗi giây mất 20 điểm HP.
+102001:Trở nên đẹp mắt Huỳnh quang, nhưng sẽ thu hút sự chú ý của quái vật và bị tấn công.
+103001:Đêm qua ngủ rất ngon và khi tỉnh dậy, thấy mình đang rất tập trung vào việc đào khoáng.
+104001:Ngủ ngon và thị lực tốt hơn rất nhiều
+105001:Kỹ năng kiên cường của Laura đang trong thời gian hồi chiêu không thể kích hoạt trong 5 phút
+105002:Kỹ năng kiên cường của Laura đang trong thời gian hồi chiêu không thể kích hoạt trong 3 phút
+106001:Đừng bao giờ gây sự với người có việc thức dậy tức giận
+107001:buồn ngủ, cần nghỉ ngơi một chút
+108001:Đêm qua, tư thế ngủ không được tốt lắm, bị vẹo cổ, phải tránh vận động mạnh.
+110001:Bị khống chế rồi, duy trì chịu sát thương.
+200001:Mỗi giây phải chịu 15 điểm sát thương thiêu đốt.
+200002:Mỗi giây phải chịu 30 điểm sát thương thiêu đốt.
+200003:Mỗi giây phải chịu 40 điểm sát thương thiêu đốt.
+200004:Mỗi giây phải chịu 60 điểm sát thương thiêu đốt.
+201001:Mỗi giây phải chịu 30 điểm sát thương hỗn loạn.
+201002:Mỗi giây phải chịu 5 điểm sát thương hỗn loạn.
+202001:Pháo hoa sẽ xua đuổi Niên Thú!
+203001:Dưới sự điều khiển của Hư không, rất khó để thoát ra ngoài; hãy tăng tốc và trốn thoát! 
+204001:Giảm 75% sát thương tầm xa.
+205001:Bóng ma hư không mở lá chắn bất khả chiến bại, miễn nhiễm với mọi sát thương
+206001:Giảm thiểu 90% sát thương cận chiến
+206002:Giảm thiểu 90% sát thương cận chiến
+206003:Giảm thiểu 90% sát thương cận chiến
+207001:Giảm thiểu 90% sát thương viễn chiến
+207002:Giảm thiểu 90% sát thương viễn chiến
+207003:Giảm thiểu 90% sát thương  chiến viễn
+208001:Giảm thiểu 90% sát thương cháy nổ
+208002:Giảm thiểu 90% sát thương cháy nổ
+208003:Giảm thiểu 90% sát thương cháy nổ
+209001:
+210001:Khi Bóng ma Hư không hút năng lượng từ mục tiêu, giảm 50% sát thương nhận được
+220001:Tốc độ di chuyển cơ bản tăng 20%
+220002:Tốc độ di chuyển cơ bản tăng 20%
+230001:Bị kiểm soát và liên tục bị thương.
+230002:Rơi vào cảnh ảo tưởng
+240001:Hồi 2 HP mỗi giây
+250001:Mất 2 HP mỗi giây
+260001:Rơi vào cảnh ảo tưởng
+270001:Mất 5 HP mỗi giây
+280001:Nhanh trốn đi! Bão cát đang đến!
+280002:Không bị cản trở trong bão cát.
+290001:Vững vàng như đá, không có gì phải sợ.
+998001:
+999001:Ở trạng thái bảo vệ, không nhận bất kỳ sát thương nào, nhưng nếu thực hiện tấn công hoặc dùng vật phẩm, trạng thái này sẽ biến mất.
+999002:Trong thời gian Bảo Vệ Hồi Sinh, không phải chịu bất kỳ sát thương nào, sau khi chủ động tấn công sẽ mất.
+1000001:Tăng tốc 100%
+1000002:
+1000003:Tốc độ giảm 75%
+1001001:
+1002001:Virus không ngừng xâm nhập cơ thể bạn!
+1002002:Nhiễm Virus và gia tăng sức mạnh
+1003001:Wow...(Mình thành gà rồi? )
+1003002:Wow...(Mình thành gà rồi? )
+1004001:Ùm bò...(Mình thành bò rồi? )
+1004002:Ùm bò...(Mình thành bò rồi? )
+1005001:Be be...(Mình thành dê rồi? )
+1005002:Be be...(Mình thành dê rồi? )
+1006001:Mini sinh nhật 1 tuổi đùa chút chơi (Ta thành Ác Ma rồi? )
+1006002:Mini sinh nhật 1 tuổi đùa chút chơi (Ta thành Ác Ma rồi? )
+1007001:Roạt Roạt...(Mình thành Ton Ton rồi? )
+1007002:Roạt Roạt...(Mình thành Ton Ton rồi? )
+1008001:Bịch...(Mình thành Dango rồi? )
+1008002:Bịch...(Mình thành Dango rồi? )
+1009001:Một khiên (HP 50)
+1009004:Mỗi 1s gây ra 1 điểm sát thương.
+1009005:Mỗi 1s gây ra 2 điểm sát thương.
+1009006:Tốc độ di chuyển giảm trong 3 giây
+1009007:Tốc độ thu thập được tăng lên 10%.
+1010001:Nhiễm Virus và gia tăng sức mạnh
+1011001:Sát thương cận chiến tăng 5%
+1012001:Tăng sát thương tầm xa 5%
+1013001:Lá chắn 20 máu
+1014001:Huyết quản đột nhiên trở nên rất mạnh mẽ!
+1015001:Khi ngủ ngoài trời giữa sa mạc, ta luôn có cảm giác như có thứ gì đó đang nhìn chằm chằm vào mình, vì vậy tốt hơn hết là nên dựng lều.
+1016001:Sẽ khiến sinh vật chịu sát thương liên tục và gây tê liệt thần kinh trong một thời gian nhất định, rất nguy hiểm.
+1017001:Tê liệt rồi, không thể cử động nữa ...
+1017002:Tê liệt rồi, không thể cử động nữa ...
+1018001:Độc tố của bọ cạp càng nhiều và mạnh, hãy cẩn thận!
+1018002:Độc tố của bọ cạp càng nhiều và mạnh, hãy cẩn thận!
+1018003:Độc tố của bọ cạp càng nhiều và mạnh, hãy cẩn thận!
+1018004:Độc tố của bọ cạp càng nhiều và mạnh, hãy cẩn thận!
+1018005:Độc tố của bọ cạp càng nhiều và mạnh, hãy cẩn thận!
+1019001:Ý thức đang dần mơ hồ ...
+1019002:
+1019003:
+1020001:Ôi, không cầm máu được rồi! Bác sỹ ở đâu?!
+1020002:Ôi, không cầm máu được rồi! Bác sỹ ở đâu?!
+1020003:Ôi, không cầm máu được rồi! Bác sỹ ở đâu?!
+1020004:Ôi, không cầm máu được rồi! Bác sỹ ở đâu?!
+1020005:Ôi, không cầm máu được rồi! Bác sỹ ở đâu?!
+1021001:Đột nhiên cảm thấy thân thể không ổn, không thể kiểm soát...
+1022001:Ở trong trạng thái bảo vệ, không chịu bất cứ sát thương nào.
+1023001:Không thể ở trong Cỏ Thủy Sinh quá lâu, cỏ này buộc hết vào người rồi...
+1024001:Thiết bị PC - nhấn giữ nút chuột phải để tích sạc sức mạnh cần ném, nhấp vào nút chuột phải để nâng cần gạt; Thiết bị di động - nhấn giữ phím câu cá để tích sạc sức mạnh cần ném, nhấp vào phím câu cá để nâng cần gạt;
+1025001:Úm ba la~ Hải Linh Hộ Vệ, biến hình!
+1026001:Nước nóng quá!!
+1027001:Cưỡi trên hải mã của tôi để tham quan đại dương ~ 
+1028001:Được bảo vệ bởi thần biển, giảm khả năng bị hải âu quấy rối khi câu cá, giảm khả năng cá mập xuất hiện.
+1029001:Trong hoàn cảnh cực nóng, tăng tiêu hao Thể lực, sức mạnh tăng lên rất nhiều
+1030001:Trong hoàn cảnh nóng bức, tăng tiêu hao Thể lực, sức mạnh tăng lên
+1031001:Trong môi trường lạnh cóng cứng như đá, tăng tiêu hao Thể lực, miễn giảm sát thương
+1032001:Trong môi trường cực lạnh cứng như đá, tăng tiêu hao Thể lực, miễn giảm sát thương rất nhiều
+1033001:Bị đóng băng không thể hành động, sẽ xóa sau khi nhận sát thương đạt mốc
+1034001:Bị đóng băng không thể hành động, nhưng cũng không nhận sát thương, sẽ tan chảy khi bị nung nóng
+1035001:
+1036001:
+1037001:Bị đóng băng không thể hành động, sẽ xóa sau khi nhận sát thương đạt mốc
+1037002:Bị đóng băng không thể hành động, sẽ xóa sau khi nhận sát thương đạt mốc
+1038001:Lạnh giá sẽ khiến bạn di chuyển chậm.
+1038002:Lạnh giá sẽ khiến bạn di chuyển chậm.
+1038003:Lạnh giá sẽ khiến bạn di chuyển chậm.
+1039001:Tăng kháng với lạnh cóng
+1040001:Tăng kháng với nóng bức
+1041001:
+1042001:
+1043001:Tăng Sát Thương Băng (Test)
+1044001:Liên tục chịu sát thương đóng băng (Test)
+1045001:Tăng sát thương đóng băng phải chịu (Test)
+1046001:Tăng Tấn Công Băng (Test)
+1047001:Tăng Thủ Băng (Test)
+1048001:Chịu sát thương băng lúc thực hiện hành động (Test)
+1049001:
+1050001:Chịu đòn tấn công thuộc tính băng, bạn cảm thấy lạnh cóng, di chuyển chậm chạp
+1050002:Chịu đòn tấn công thuộc tính băng, bạn cảm thấy lạnh cóng, di chuyển chậm chạp
+1050003:Chịu đòn tấn công thuộc tính băng, bạn cảm thấy lạnh cóng, di chuyển chậm chạp
+1050004:Chịu đòn tấn công thuộc tính băng, bạn cảm thấy lạnh cóng, di chuyển chậm chạp
+1050005:Chịu đòn tấn công thuộc tính băng, bạn cảm thấy lạnh cóng, sắp đông cứng rồi!
+1051001:Thiêu cháy, liên tục chịu sát thương
+1052001:
+1060001:Có thao tác vo quả cầu
+1060002:Có thao tác chồng khối, tụ lực, thoát ly
+1061001:Miễn dịch hiệu ứng Đóng Băng Hạn Chế
+1062001:Bị Hư Không lây nhiễm rồi!
+1069001:Sức Bền đã bị loại bỏ, tạm thời mất năng lực hành động
+1070001:Sức Bền đã bị loại bỏ, tạm thời mất năng lực hành động
+1071001:Có thể khiến người tấn công rơi vào trạng thái trúng độc
+1072001:Tối qua ngủ rất ngon, sáng nay ăn rất ngon miệng!
+1073001:Chất độc của Bọ Cạp ngày càng mạnh hơn, phải cẩn thận!
+1073002:Chất độc của Bọ Cạp ngày càng mạnh hơn, phải cẩn thận!
+1073003:Chất độc của Bọ Cạp ngày càng mạnh hơn, phải cẩn thận!
+1073004:Chất độc của Bọ Cạp ngày càng mạnh hơn, phải cẩn thận!
+1073005:Chất độc của Bọ Cạp ngày càng mạnh hơn, phải cẩn thận!
+1074001:Cứ 1s gây ra 3 điểm sát thương.
+1074002:Mỗi 1s gây ra 5 điểm sát thương.
+1074003:Cứ 1s gây ra 10 điểm sát thương.
+1075001:Miễn hiệu ứng khống chế Đóng Băng
+2000001:Ngủ say
+2001001:Lạnh giá sẽ khiến bạn di chuyển chậm.
+2002001:Lạnh giá sẽ khiến bạn di chuyển chậm.
+2002002:Tăng 20% tốc độ cơ bản.
+2003001:Lạnh giá sẽ khiến bạn di chuyển chậm.
+2004001:天赋：拥有水下呼吸能力！
+2005001:Tăng 50% tốc độ đào.
+2006001:Sát thương cận chiến tăng 1%
+2006002:Sát thương cận chiến tăng 2%
+2006003:Sát thương cận chiến tăng 3%
+2006004:Sát thương cận chiến tăng 4%
+2006005:Sát thương cận chiến tăng 5%
+2007001:Sát thương tầm xa tăng 1%
+2007002:Sát thương tầm xa tăng 2%
+2007003:Sát thương tầm xa tăng 3%
+2007004:Sát thương tầm xa tăng 4%
+2007005:Sát thương tầm xa tăng 5%
+2008001:Tăng kháng với lạnh cóng
+2009001:Thiên Phú: Thức tỉnh linh lực bị phong ấn, tăng khả năng chịu lạnh!
+2010001:Trong 10s hồi phục 10 điểm HP.
+2010002:Trong 10s hồi phục 20 điểm HP.
+2011001:Bị choáng rồi, tạm thời mất năng lực hành động.
+2012001:1 Khiên với 20 điểm HP
+2013001:Cứ 3s hồi phục 5 điểm HP.
+2013002:Cứ 1s hồi phục 5 điểm HP..
+2013003:Cứ 3s hồi phục 5 điểm HP.
+2014001:Đồ bạn ăn không sạch sẽ lắm, không thể đi lại được...
+2014002:Đồ bạn ăn không sạch sẽ lắm, không thể đi lại được...
+2014003:Đồ bạn ăn không sạch sẽ lắm, không thể đi lại được...
+3000001:]=]
+
+buffDescList = toTab(buffDescList)
